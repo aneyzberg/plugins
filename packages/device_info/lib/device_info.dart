@@ -44,6 +44,7 @@ class AndroidDeviceInfo {
     this.board,
     this.bootloader,
     this.brand,
+    this.carrier,
     this.device,
     this.display,
     this.fingerprint,
@@ -73,6 +74,8 @@ class AndroidDeviceInfo {
   /// The system bootloader version number.
   final String bootloader;
 
+  /// Carrier name from Sim Card
+  final String carrier;
   /// The consumer-visible brand with which the product/hardware will be associated, if any.
   final String brand;
 
@@ -132,6 +135,7 @@ class AndroidDeviceInfo {
       board: map['board'],
       bootloader: map['bootloader'],
       brand: map['brand'],
+      carrier: map['carrier'],
       device: map['device'],
       display: map['display'],
       fingerprint: map['fingerprint'],

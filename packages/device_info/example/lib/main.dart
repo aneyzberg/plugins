@@ -67,6 +67,7 @@ class _MyAppState extends State<MyApp> {
       'board': build.board,
       'bootloader': build.bootloader,
       'brand': build.brand,
+      'carrier': build.carrier,
       'device': build.device,
       'display': build.display,
       'fingerprint': build.fingerprint,

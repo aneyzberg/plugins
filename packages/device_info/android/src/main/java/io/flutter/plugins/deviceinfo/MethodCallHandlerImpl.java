@@ -6,10 +6,15 @@ package io.flutter.plugins.deviceinfo;
 
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.os.Build;
+import android.app.Activity;
+import android.util.Log;
+import android.telephony.TelephonyManager;
 import android.provider.Settings;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
+import io.flutter.plugin.common.PluginRegistry.Registrar;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,13 +26,15 @@ import java.util.Map;
 class MethodCallHandlerImpl implements MethodChannel.MethodCallHandler {
 
   private ContentResolver contentResolver;
+  private Context context;
 
   /** Substitute for missing values. */
   private static final String[] EMPTY_STRING_LIST = new String[] {};
 
   /** Constructs DeviceInfo. The {@code contentResolver} must not be null. */
-  MethodCallHandlerImpl(ContentResolver contentResolver) {
+  MethodCallHandlerImpl(ContentResolver contentResolver, Context context) {
     this.contentResolver = contentResolver;
+    this.context = context;
   }
 
   @Override
@@ -46,6 +53,7 @@ class MethodCallHandlerImpl implements MethodChannel.MethodCallHandler {
       build.put("manufacturer", Build.MANUFACTURER);
       build.put("model", Build.MODEL);
       build.put("product", Build.PRODUCT);
+      build.put("carrier", getCarrierName());
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
         build.put("supported32BitAbis", Arrays.asList(Build.SUPPORTED_32_BIT_ABIS));
         build.put("supported64BitAbis", Arrays.asList(Build.SUPPORTED_64_BIT_ABIS));
@@ -71,8 +79,9 @@ class MethodCallHandlerImpl implements MethodChannel.MethodCallHandler {
       version.put("release", Build.VERSION.RELEASE);
       version.put("sdkInt", Build.VERSION.SDK_INT);
       build.put("version", version);
-
+      System.err.println(String.format("var: %s", build));
       result.success(build);
+      System.err.println(String.format("sucess: %s", "success"));
     } else {
       result.notImplemented();
     }
@@ -88,6 +97,17 @@ class MethodCallHandlerImpl implements MethodChannel.MethodCallHandler {
   @SuppressLint("HardwareIds")
   private String getAndroidId() {
     return Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID);
+  }
+
+  /**
+   *
+   * @return The carrier name
+   */
+  private String getCarrierName() {
+    TelephonyManager manager = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
+    String name = manager.getNetworkOperatorName();
+    System.err.println(String.format("carrier name: %s", name));
+    return "AT&T";
   }
 
   /**

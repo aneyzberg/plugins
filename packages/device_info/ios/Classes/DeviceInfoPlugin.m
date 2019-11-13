@@ -4,6 +4,8 @@
 
 #import "DeviceInfoPlugin.h"
 #import <sys/utsname.h>
+#import <CoreTelephony/CTTelephonyNetworkInfo.h>
+#import <CoreTelephony/CTCarrier.h>
 
 @implementation FLTDeviceInfoPlugin
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
@@ -17,6 +19,10 @@
 - (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
   if ([@"getIosDeviceInfo" isEqualToString:call.method]) {
     UIDevice* device = [UIDevice currentDevice];
+    CTTelephonyNetworkInfo *netinfo = [[CTTelephonyNetworkInfo alloc] init];
+    CTCarrier *carrier = [netinfo subscriberCellularProvider];
+    NSLog(@"Carrier Name: %@", [carrier carrierName]);
+    // [netinfo release];
     struct utsname un;
     uname(&un);
 
